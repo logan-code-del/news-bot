@@ -1,86 +1,48 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>News Truthifier — Dashboard</title>
-  <link rel="stylesheet" href="style.css" />
-  <meta name="description" content="Client-side news cross-reference dashboard (RSS-based). Free, zero-install, GitHub Pages ready." />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>News Truthifier</title>
+    <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div id="app" class="layout">
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
     <aside class="sidebar">
-      <div class="brand">
-        <h1>News Truthifier</h1>
-        <small>RSS-powered, client-side verifier</small>
-      </div>
+        <h2 class="logo">📰 Truthifier</h2>
 
-      <div class="controls">
-        <h3>Feeds</h3>
-        <div id="feeds-list" class="feeds-list"></div>
-        <div class="add-feed">
-          <input id="new-feed" placeholder="Add RSS feed URL (or leave default)" />
-          <button id="add-feed-btn">Add</button>
-        </div>
-
-        <h3>Fact-check Feeds</h3>
-        <div id="factfeeds-list" class="feeds-list"></div>
-        <div class="add-feed">
-          <input id="new-factfeed" placeholder="Add fact-check RSS URL (optional)" />
-          <button id="add-factfeed-btn">Add</button>
-        </div>
-
-        <h3>Options</h3>
-        <label><input type="checkbox" id="use-proxy" /> Use CORS proxy fallback (recommended)</label>
-        <label><input type="checkbox" id="autorefresh" /> Auto-refresh every 10m</label>
-
-        <div class="actions">
-          <button id="refresh-btn" class="primary">Refresh Now</button>
-          <button id="clear-cache">Clear Saved Feeds</button>
-        </div>
-
-        <div class="footer-note">
-          <small>All data stays in your browser. This client-only app uses RSS feeds and public proxies when necessary. See README for details.</small>
-        </div>
-      </div>
+        <nav class="nav">
+            <h3>Categories</h3>
+            <ul id="category-list">
+                <li data-category="all" class="active">All News</li>
+                <li data-category="politics">Politics</li>
+                <li data-category="world">World</li>
+                <li data-category="tech">Technology</li>
+                <li data-category="health">Health</li>
+                <li data-category="business">Business</li>
+                <li data-category="sports">Sports</li>
+                <li data-category="travel">Travel</li>
+                <li data-category="local">Local</li>
+            </ul>
+        </nav>
     </aside>
 
+    <!-- MAIN CONTENT AREA -->
     <main class="main">
-      <header class="topbar">
-        <div>
-          <h2 id="title">Recent Verifications</h2>
-          <p id="subtitle">Articles aggregated from configured feeds.</p>
-        </div>
-        <div class="top-actions">
-          <button id="toggle-theme">Toggle Theme</button>
-        </div>
-      </header>
+        <header class="top-bar">
+            <h1>News Truthifier</h1>
+            <p>Gathering news → Cross-referencing → Removing bias → Rewriting truthfully</p>
+        </header>
 
-      <section class="summary">
-        <div class="stat">
-          <div class="num" id="stat-sources">0</div>
-          <div class="label">Sources</div>
-        </div>
-        <div class="stat">
-          <div class="num" id="stat-articles">0</div>
-          <div class="label">Articles</div>
-        </div>
-        <div class="stat">
-          <div class="num" id="stat-claims">0</div>
-          <div class="label">Candidate Claims</div>
-        </div>
-      </section>
+        <!-- Articles Container -->
+        <section id="articles" class="articles"></section>
 
-      <section id="cards" class="cards">
-        <!-- generated cards -->
-      </section>
-
-      <footer class="credits">
-        <span>Built for GitHub Pages · No servers · RSS-only</span>
-      </footer>
     </main>
-  </div>
+</div>
 
-  <script src="app.js" defer></script>
+<script src="app.js"></script>
 </body>
 </html>
