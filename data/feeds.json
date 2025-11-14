@@ -1,0 +1,20 @@
+[
+  {
+    "title": "Global Leaders Meet for Climate Summit",
+    "content": "World leaders convened to discuss urgent climate policies and international agreements...",
+    "link": "https://www.bbc.com/news/world-12345",
+    "source": "BBC"
+  },
+  {
+    "title": "Tech Giant Releases New AI Model",
+    "content": "The latest AI model promises faster processing and improved accuracy in natural language understanding...",
+    "link": "https://www.theverge.com/ai-news",
+    "source": "The Verge"
+  },
+  {
+    "title": "Local Health Authorities Warn of Flu Season",
+    "content": "Hospitals are preparing for an increase in flu cases this winter, encouraging vaccinations...",
+    "link": "https://www.cdc.gov/news/flu-warning",
+    "source": "CDC"
+  }
+]
