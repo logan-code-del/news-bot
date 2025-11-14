@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>News Truthifier — Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <meta name="description" content="Client-side news cross-reference dashboard (RSS-based). Free, zero-install, GitHub Pages ready." />
+</head>
+<body>
+  <div id="app" class="layout">
+    <aside class="sidebar">
+      <div class="brand">
+        <h1>News Truthifier</h1>
+        <small>RSS-powered, client-side verifier</small>
+      </div>
+
+      <div class="controls">
+        <h3>Feeds</h3>
+        <div id="feeds-list" class="feeds-list"></div>
+        <div class="add-feed">
+          <input id="new-feed" placeholder="Add RSS feed URL (or leave default)" />
+          <button id="add-feed-btn">Add</button>
+        </div>
+
+        <h3>Fact-check Feeds</h3>
+        <div id="factfeeds-list" class="feeds-list"></div>
+        <div class="add-feed">
+          <input id="new-factfeed" placeholder="Add fact-check RSS URL (optional)" />
+          <button id="add-factfeed-btn">Add</button>
+        </div>
+
+        <h3>Options</h3>
+        <label><input type="checkbox" id="use-proxy" /> Use CORS proxy fallback (recommended)</label>
+        <label><input type="checkbox" id="autorefresh" /> Auto-refresh every 10m</label>
+
+        <div class="actions">
+          <button id="refresh-btn" class="primary">Refresh Now</button>
+          <button id="clear-cache">Clear Saved Feeds</button>
+        </div>
+
+        <div class="footer-note">
+          <small>All data stays in your browser. This client-only app uses RSS feeds and public proxies when necessary. See README for details.</small>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <h2 id="title">Recent Verifications</h2>
+          <p id="subtitle">Articles aggregated from configured feeds.</p>
+        </div>
+        <div class="top-actions">
+          <button id="toggle-theme">Toggle Theme</button>
+        </div>
+      </header>
+
+      <section class="summary">
+        <div class="stat">
+          <div class="num" id="stat-sources">0</div>
+          <div class="label">Sources</div>
+        </div>
+        <div class="stat">
+          <div class="num" id="stat-articles">0</div>
+          <div class="label">Articles</div>
+        </div>
+        <div class="stat">
+          <div class="num" id="stat-claims">0</div>
+          <div class="label">Candidate Claims</div>
+        </div>
+      </section>
+
+      <section id="cards" class="cards">
+        <!-- generated cards -->
+      </section>
+
+      <footer class="credits">
+        <span>Built for GitHub Pages · No servers · RSS-only</span>
+      </footer>
+    </main>
+  </div>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
