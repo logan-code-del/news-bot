@@ -1,43 +1,98 @@
-:root{
-  --bg:#0f1720; --panel:#0b1220; --muted:#9aa7b2; --accent:#52b788; --card:#08121a;
-  --glass: rgba(255,255,255,0.03);
+/* GLOBAL RESET */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
-*{box-sizing:border-box}
-body{margin:0;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial;color:#e6eef3;background:linear-gradient(180deg,var(--bg),#071018);min-height:100vh}
-.layout{display:flex;min-height:100vh}
-.sidebar{width:320px;padding:20px;background:linear-gradient(180deg, rgba(8,12,20,0.9), rgba(6,9,14,0.95));border-right:1px solid rgba(255,255,255,0.03);display:flex;flex-direction:column;gap:12px}
-.brand h1{margin:0;font-size:18px}
-.brand small{color:var(--muted)}
-.controls{margin-top:6px;flex:1;overflow:auto;padding-right:6px}
-.feeds-list{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}
-.feed-item{display:flex;gap:8px;align-items:center;background:var(--glass);padding:8px;border-radius:8px}
-.feed-item input{flex:1;border:0;background:transparent;color:var(--muted)}
-.feed-item button{border:0;background:transparent;color:var(--muted);cursor:pointer}
-.add-feed{display:flex;gap:8px;margin-bottom:12px}
-.add-feed input{flex:1;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit}
-.add-feed button{padding:8px 10px;border-radius:8px;border:0;background:var(--accent);color:#021;cursor:pointer}
-.actions{display:flex;gap:8px;margin-top:8px}
-.primary{background:var(--accent);border:0;color:#021;padding:8px 12px;border-radius:8px;cursor:pointer}
-.footer-note{margin-top:14px;color:var(--muted);font-size:12px}
-.main{flex:1;padding:20px;display:flex;flex-direction:column;gap:16px}
-.topbar{display:flex;justify-content:space-between;align-items:center}
-.top-actions button{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:8px;border-radius:8px;color:var(--muted);cursor:pointer}
-.summary{display:flex;gap:12px}
-.stat{background:var(--card);padding:12px;border-radius:10px;min-width:140px;text-align:center;border:1px solid rgba(255,255,255,0.02)}
-.stat .num{font-size:22px;font-weight:700}
-.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px}
-.card{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(0,0,0,0.06));padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
-.card h4{margin:0 0 8px 0}
-.card .meta{display:flex;justify-content:space-between;color:var(--muted);font-size:13px;margin-bottom:8px}
-.claim{background:rgba(255,255,255,0.02);padding:10px;border-radius:8px;margin-bottom:8px}
-.badge{display:inline-block;padding:4px 8px;border-radius:999px;font-size:12px}
-.conf-high{background:rgba(82,183,136,0.12);color:var(--accent)}
-.conf-mid{background:rgba(250,200,70,0.08);color:#f6c85a}
-.conf-low{background:rgba(240,84,84,0.06);color:#f06464}
-.link-list{font-size:13px;color:var(--muted)}
-.credits{text-align:center;color:var(--muted);margin-top:12px}
-@media(max-width:880px){
-  .sidebar{display:none}
-  .main{padding:12px}
-  .cards{grid-template-columns:1fr}
+body {
+    font-family: "Segoe UI", sans-serif;
+    background: #e9eef3;
+    color: #222;
+    display: flex;
+}
+
+/* LAYOUT */
+.layout {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 260px;
+    background: #0f172a;
+    color: #fff;
+    padding: 20px;
+}
+.logo {
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+.nav h3 {
+    font-size: 14px;
+    opacity: 0.7;
+    margin-bottom: 10px;
+}
+.nav ul {
+    list-style: none;
+}
+.nav li {
+    padding: 10px 12px;
+    margin-bottom: 6px;
+    background: #1e293b;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.nav li:hover,
+.nav li.active {
+    background: #334155;
+}
+
+/* MAIN */
+.main {
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+}
+.top-bar {
+    margin-bottom: 20px;
+}
+.top-bar h1 {
+    font-size: 32px;
+    margin-bottom: 4px;
+}
+
+/* ARTICLE CARDS */
+.articles {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 20px;
+}
+.card {
+    background: #fff;
+    padding: 18px;
+    border-radius: 14px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.12);
+    cursor: pointer;
+    transition: 0.2s;
+}
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.18);
+}
+.card h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+.card p {
+    font-size: 15px;
+    opacity: 0.8;
+    margin-bottom: 10px;
+}
+.card .source {
+    font-size: 13px;
+    opacity: 0.6;
 }
