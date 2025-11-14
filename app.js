@@ -1,173 +1,164 @@
 /* ============================
-      RSS SOURCES
+    Global Configuration
 ============================ */
 
-const FEEDS = {
-    all: [
-        // NATIONAL
-        "https://www.npr.org/rss/rss.php?id=1001",
-        "https://rss.cnn.com/rss/edition.rss",
-        "https://feeds.foxnews.com/foxnews/latest",
-        "https://www.reutersagency.com/feed/?best-topics=world&post_type=best",
-        
-        // INTERNATIONAL
-        "https://www.aljazeera.com/xml/rss/all.xml",
-        "https://feeds.bbci.co.uk/news/rss.xml",
+const CATEGORY_FEEDS = {
+    politics: "data/politics.json",
+    world: "data/world.json",
+    tech: "data/tech.json",
+    health: "data/health.json",
+    business: "data/business.json",
+    sports: "data/sports.json",
+    travel: "data/travel.json",
+    local: "data/local.json",
+    all: "data/feeds.json"
+};
+const FACTCHECK_FEEDS = "data/factchecks.json";
+const STORAGE_KEY = "truthifier_config_v2";
 
-        // TECH
-        "https://www.theverge.com/rss/index.xml",
-        "https://feeds.arstechnica.com/arstechnica/index",
-
-        // HEALTH
-        "https://www.cdc.gov/rss/rss.aspx",
-
-        // BUSINESS
-        "https://www.marketwatch.com/rss/topstories",
-        
-        // SPORTS
-        "https://www.espn.com/espn/rss/news",
-
-        // TRAVEL
-        "https://www.travelpulse.com/rss/2.xml",
-
-        // LOCAL (generic)
-        "https://news.yahoo.com/rss/"
-    ],
-
-    politics: [
-        "https://rss.nytimes.com/services/xml/rss/nyt/Politics.xml",
-        "https://www.politico.com/rss/congress.xml",
-        "https://feeds.foxnews.com/foxnews/politics"
-    ],
-
-    world: [
-        "https://feeds.bbci.co.uk/news/world/rss.xml",
-        "https://www.aljazeera.com/xml/rss/all.xml"
-    ],
-
-    tech: [
-        "https://www.theverge.com/rss/index.xml",
-        "https://www.engadget.com/rss.xml"
-    ],
-
-    health: [
-        "https://www.cdc.gov/rss/rss.aspx",
-        "https://medicalxpress.com/rss-feed/"
-    ],
-
-    business: [
-        "https://www.marketwatch.com/rss/topstories",
-        "https://www.investing.com/rss/news.rss"
-    ],
-
-    sports: [
-        "https://www.espn.com/espn/rss/news"
-    ],
-
-    travel: [
-        "https://www.travelpulse.com/rss/2.xml"
-    ],
-
-    local: [
-        "https://news.yahoo.com/rss/"
-    ]
+/* ============================
+    Load User Config
+============================ */
+let config = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
+    darkMode:false,
+    autoRefresh:false,
+    refreshInterval:10,
+    myFeeds:[],
+    starredCategories:[]
 };
 
+/* ============================
+    DOM Elements
+============================ */
+const articlesEl = document.getElementById("articles");
+const categoryEls = document.querySelectorAll("#category-list li");
+const darkToggle = document.getElementById("dark-mode-toggle");
+const autoRefreshToggle = document.getElementById("auto-refresh-toggle");
+const refreshIntervalInput = document.getElementById("refresh-interval");
+const myFeedsList = document.getElementById("my-feeds-list");
+const newFeedInput = document.getElementById("new-feed-input");
+const addFeedBtn = document.getElementById("add-feed-btn");
 
 /* ============================
-  SIMPLE CLIENT-SIDE FACT CHECK
+    Dark Mode
 ============================ */
+function updateDarkMode() {
+    if(config.darkMode) document.body.classList.add("dark");
+    else document.body.classList.remove("dark");
+    darkToggle.checked = config.darkMode;
+}
+darkToggle.addEventListener("change", e=>{
+    config.darkMode = e.target.checked;
+    saveConfig();
+    updateDarkMode();
+});
+updateDarkMode();
 
-function cleanBias(text) {
-    if (!text) return "";
+/* ============================
+    Auto Refresh
+============================ */
+let autoTimer = null;
+function toggleAutoRefresh() {
+    if(autoTimer) clearInterval(autoTimer);
+    if(config.autoRefresh) autoTimer = setInterval(()=>loadCategory(currentCategory), config.refreshInterval*60*1000);
+    autoRefreshToggle.checked = config.autoRefresh;
+}
+autoRefreshToggle.addEventListener("change", e=>{
+    config.autoRefresh = e.target.checked;
+    saveConfig();
+    toggleAutoRefresh();
+});
 
-    return text
-        .replace(/\b(democrat|republican|left-wing|right-wing|conservative|liberal)\b/gi, "")
-        .replace(/\b(criticized|slammed|blasted|attacked)\b/gi, "said")
-        .replace(/\b(shocking|outrageous|controversial)\b/gi, "")
-        .trim();
+/* ============================
+    Refresh Interval
+============================ */
+refreshIntervalInput.value = config.refreshInterval;
+refreshIntervalInput.addEventListener("change", e=>{
+    let val = parseInt(e.target.value)||10;
+    config.refreshInterval = val;
+    saveConfig();
+    toggleAutoRefresh();
+});
+
+/* ============================
+    Save Config
+============================ */
+function saveConfig() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
 }
 
-
 /* ============================
-    FETCH RSS (CORS-SAFE)
+    Load Category
 ============================ */
+let currentCategory = "all";
 
-async function fetchRSS(url) {
-    const proxy = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
-    try {
-        const res = await fetch(proxy);
-        const text = await res.text();
-        return new window.DOMParser().parseFromString(text, "text/xml");
-    } catch (e) {
-        return null;
-    }
-}
-
-
-/* ============================
-    LOAD ARTICLES
-============================ */
-
-async function loadCategory(cat = "all") {
-    const container = document.getElementById("articles");
-    container.innerHTML = "<p>Loading...</p>";
-
-    let items = [];
-
-    for (const url of FEEDS[cat]) {
-        const xml = await fetchRSS(url);
-        if (!xml) continue;
-
-        const entries = [...xml.querySelectorAll("item")].slice(0, 6);
-
-        entries.forEach(item => {
-            items.push({
-                title: cleanBias(item.querySelector("title")?.textContent),
-                description: cleanBias(item.querySelector("description")?.textContent),
-                link: item.querySelector("link")?.textContent,
-                source: new URL(url).hostname.replace("www.", "")
-            });
-        });
-    }
-
-    renderArticles(items);
-}
-
-
-/* ============================
-    RENDER ARTICLE CARDS
-============================ */
-
-function renderArticles(list) {
-    const container = document.getElementById("articles");
-    container.innerHTML = "";
-
-    list.forEach(article => {
-        const el = document.createElement("div");
-        el.className = "card";
-        el.innerHTML = `
-            <h3>${article.title}</h3>
-            <p>${article.description}</p>
-            <div class="source">Source: ${article.source}</div>
-        `;
-        el.onclick = () => window.open(article.link, "_blank");
-        container.appendChild(el);
-    });
-}
-
-
-/* ============================
-     CATEGORY CLICK EVENTS
-============================ */
-
-document.querySelectorAll("#category-list li").forEach(li => {
-    li.addEventListener("click", () => {
-        document.querySelectorAll("#category-list li").forEach(x => x.classList.remove("active"));
-        li.classList.add("active");
-        loadCategory(li.dataset.category);
+categoryEls.forEach(el=>{
+    el.addEventListener("click", ()=>{
+        categoryEls.forEach(x=>x.classList.remove("active"));
+        el.classList.add("active");
+        currentCategory = el.dataset.category;
+        loadCategory(currentCategory);
     });
 });
 
-/* Load default */
-loadCategory("all");
+async function loadCategory(cat="all"){
+    articlesEl.innerHTML = "<p>Loading...</p>";
+    try{
+        let resp = await fetch(CATEGORY_FEEDS[cat]);
+        let data = await resp.json();
+        renderArticles(data);
+    }catch(e){
+        articlesEl.innerHTML="<p>Failed to load articles.</p>";
+        console.error(e);
+    }
+}
+
+/* ============================
+    Render Articles
+============================ */
+function renderArticles(list){
+    articlesEl.innerHTML="";
+    list.forEach(a=>{
+        const card = document.createElement("div");
+        card.className="card";
+        const confidence = Math.round((Math.random()*0.5+0.5)*100); // simple AI-score placeholder
+        card.innerHTML=`
+            <h3>${a.title}</h3>
+            <p>${a.content}</p>
+            <div class="source">Source: ${a.source}</div>
+            <div class="confidence">Confidence: ${confidence}</div>
+        `;
+        card.onclick = ()=>window.open(a.link,"_blank");
+        articlesEl.appendChild(card);
+    });
+}
+
+/* ============================
+    My Feeds Manager
+============================ */
+function renderMyFeeds(){
+    myFeedsList.innerHTML="";
+    config.myFeeds.forEach((f,i)=>{
+        const li = document.createElement("li");
+        li.textContent=f;
+        li.addEventListener("click", ()=>{
+            window.open(f,"_blank");
+        });
+        myFeedsList.appendChild(li);
+    });
+}
+addFeedBtn.addEventListener("click", ()=>{
+    const url = newFeedInput.value.trim();
+    if(!url) return;
+    config.myFeeds.push(url);
+    newFeedInput.value="";
+    saveConfig();
+    renderMyFeeds();
+});
+renderMyFeeds();
+
+/* ============================
+    Initialize
+============================ */
+loadCategory(currentCategory);
+toggleAutoRefresh();
