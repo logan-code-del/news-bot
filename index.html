@@ -3,24 +3,24 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>News Truthifier</title>
+    <title>News Truthifier Dashboard</title>
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
 <div class="layout">
 
-    <!-- SIDEBAR -->
+    <!-- Sidebar -->
     <aside class="sidebar">
         <h2 class="logo">📰 Truthifier</h2>
 
+        <!-- Categories -->
         <nav class="nav">
             <h3>Categories</h3>
             <ul id="category-list">
                 <li data-category="all" class="active">All News</li>
                 <li data-category="politics">Politics</li>
                 <li data-category="world">World</li>
-                <li data-category="tech">Technology</li>
+                <li data-category="tech">Tech</li>
                 <li data-category="health">Health</li>
                 <li data-category="business">Business</li>
                 <li data-category="sports">Sports</li>
@@ -28,18 +28,47 @@
                 <li data-category="local">Local</li>
             </ul>
         </nav>
+
+        <!-- My Feeds -->
+        <div class="my-feeds">
+            <h3>My Feeds</h3>
+            <ul id="my-feeds-list"></ul>
+            <input id="new-feed-input" placeholder="Add feed URL" />
+            <button id="add-feed-btn">Add Feed</button>
+        </div>
+
+        <!-- Settings -->
+        <div class="settings">
+            <h3>Settings</h3>
+            <label>
+                Dark Mode
+                <input type="checkbox" id="dark-mode-toggle">
+            </label>
+            <label>
+                Auto Refresh
+                <input type="checkbox" id="auto-refresh-toggle">
+            </label>
+            <label>
+                Refresh Interval (minutes)
+                <input type="number" id="refresh-interval" min="1" max="60" value="10">
+            </label>
+        </div>
     </aside>
 
-    <!-- MAIN CONTENT AREA -->
+    <!-- Main -->
     <main class="main">
         <header class="top-bar">
             <h1>News Truthifier</h1>
-            <p>Gathering news → Cross-referencing → Removing bias → Rewriting truthfully</p>
+            <p>Aggregated news → Fact-checked → Bias reduced</p>
         </header>
 
-        <!-- Articles Container -->
-        <section id="articles" class="articles"></section>
+        <!-- Trend Graph -->
+        <section id="trend-graph" class="trend-graph">
+            <canvas id="trendCanvas" height="80"></canvas>
+        </section>
 
+        <!-- Articles -->
+        <section id="articles" class="articles"></section>
     </main>
 </div>
 
